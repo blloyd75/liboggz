@@ -364,7 +364,7 @@ main (int argc, char * argv[])
     case 's': /* serialno */
       if (or_get_long (optarg, currentopt, &l))
 	goto exit_err;
-	  l = (long)(int32_t)(uint32_t)atol(l);
+	  l = (long)(int32_t)(uint32_t)l;
       oggz_table_insert (ordata->serialno_table, l, (void *)0x7);
       break;
     case 'i': /* stream index */
