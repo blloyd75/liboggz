@@ -623,8 +623,8 @@ main (int argc, char ** argv)
       break;
     case 's': /* serialno */
       filter_serialnos = 1;
-      serialno = atol (optarg);
-      oggz_table_insert (oddata->serialno_table, serialno, &truth);
+	  serialno = (long)(int32_t)(uint32_t)atol(optarg);
+	  oggz_table_insert (oddata->serialno_table, serialno, &truth);
       break;
     case 'c': /* content-type */
       filter_content_types = 1;
