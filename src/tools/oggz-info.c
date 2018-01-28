@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <limits.h> /* LONG_MAX */
 #include <math.h>
 
@@ -326,9 +327,9 @@ static int
 oit_print (OI_Info * info, OI_TrackInfo * oit, long serialno)
 {
   if (oit->codec_name) {
-    printf ("\n%s: serialno %010lu\n", oit->codec_name, serialno);
+    printf ("\n%s: serialno %010lu\n", oit->codec_name, (unsigned long)(uint32_t)serialno);
   } else {
-    printf ("\n???: serialno %010lu\n", serialno);
+    printf ("\n???: serialno %010lu\n", (unsigned long)(uint32_t)serialno);
   }
   printf ("\t%ld packets in %ld pages, %.1f packets/page, %.3f%% Ogg overhead\n",
 	  oit->packets.count, oit->pages.count,

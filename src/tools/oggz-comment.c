@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <errno.h>
 #include <getopt.h>
@@ -41,6 +42,10 @@
 #include "oggz/oggz.h"
 
 #include "oggz_tools.h"
+
+#ifdef WIN32                                                                   
+#define strcasecmp _stricmp
+#endif  
 
 #define ID_WRITE_DIRECT
 /* define USE_FLUSH_NEXT */
@@ -396,9 +401,9 @@ read_comments(OGGZ *oggz, oggz_packet * zp, long serialno, void *user_data)
   if (filter_stream_p (ocdata, serialno) && op->packetno == 1) {
     codec_name = oggz_stream_get_content_type(oggz, serialno);
     if (codec_name) {
-      printf ("%s: serialno %010lu\n", codec_name, serialno);
+      printf ("%s: serialno %010lu\n", codec_name, (unsigned long)(uint32_t)serialno);
     } else {
-      printf ("???: serialno %010lu\n", serialno);
+      printf ("???: serialno %010lu\n", (unsigned long)(uint32_t)serialno);
     }
 
     vendor = oggz_comment_get_vendor(oggz, serialno);
@@ -527,7 +532,7 @@ main (int argc, char ** argv)
     case 's': /* serialno */
       filter_serialnos = 1;
       ocdata->do_all = 0;
-      serialno = atol (optarg);
+      serialno = (long)(int32_t)(uint32_t)atol (optarg);
       oggz_table_insert (ocdata->serialno_table, serialno, (void *)0x7);
       break;
     case 'c': /* content-type */
