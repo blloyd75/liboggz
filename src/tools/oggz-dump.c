@@ -275,7 +275,7 @@ read_packet (OGGZ * oggz, oggz_packet * zp, long serialno, void * user_data)
   }
 
   fprintf (outfile, ": serialno %010lu, ",
-	   oddata->hide_serialno ? -1 : serialno);
+	   oddata->hide_serialno ? -1 : (long)(unsigned long)(uint32_t)serialno);
 
   if (oddata->hide_granulepos) {
     fprintf (outfile, "granulepos gGg");
@@ -429,23 +429,25 @@ revert_file (char * infilename)
       line_offset = 0;
 
     is_packetinfo = 0;
-    if (sscanf (&line[line_offset], "%x: serialno %ld, granulepos %" PRId64 ", packetno %" PRId64 "%n",
+    if (sscanf (&line[line_offset], "%x: serialno %lu, granulepos %" PRId64 ", packetno %" PRId64 "%n",
 		&offset, &serialno, &granulepos, &packetno,
 		&line_offset) >= 4 ||
-        sscanf (&line[line_offset], "%x: serialno %ld, calc. gpos %" PRId64 ", packetno %" PRId64 "%n",
+        sscanf (&line[line_offset], "%x: serialno %lu, calc. gpos %" PRId64 ", packetno %" PRId64 "%n",
 		&offset, &serialno, &granulepos, &packetno,
 		&line_offset) >= 4) {
+      serialno = (long)(int32_t)(uint32_t)serialno;
       is_packetinfo = 1;
     } else {
-      if (sscanf (&line[line_offset], "%x: serialno %ld, granulepos %" PRId64 "|%" PRId64 ", packetno %" PRId64 "%n",
+      if (sscanf (&line[line_offset], "%x: serialno %lu, granulepos %" PRId64 "|%" PRId64 ", packetno %" PRId64 "%n",
 		  &offset, &serialno, &iframe, &pframe, &packetno,
 		  &line_offset) >= 5 ||
-          sscanf (&line[line_offset], "%x: serialno %ld, calc. gpos %" PRId64 "|%" PRId64 ", packetno %" PRId64 "%n",
+          sscanf (&line[line_offset], "%x: serialno %lu, calc. gpos %" PRId64 "|%" PRId64 ", packetno %" PRId64 "%n",
 		  &offset, &serialno, &iframe, &pframe, &packetno,
 		  &line_offset) >= 5) {
-	int granuleshift = oggz_get_granuleshift (oggz, serialno);
-	is_packetinfo = 1;
-	granulepos = (iframe<<granuleshift)+pframe;
+        int granuleshift = oggz_get_granuleshift (oggz, serialno);
+        is_packetinfo = 1;
+        serialno = (long)(int32_t)(uint32_t)serialno;
+        granulepos = (iframe<<granuleshift)+pframe;
       }
     }
 
